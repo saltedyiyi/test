@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.typhoon.dao.CarMapper">
+	<resultMap id="BaseResultMap" type="com.typhoon.bean.Car">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="gid" jdbcType="INTEGER" property="gid" />
+		<result column="uid" jdbcType="INTEGER" property="uid" />
+		<result column="gname" jdbcType="VARCHAR" property="gname" />
+		<result column="pic" jdbcType="VARCHAR" property="pic" />
+		<result column="price" jdbcType="DECIMAL" property="price" />
+		<result column="cxprice" jdbcType="DECIMAL" property="cxprice" />
+		<result column="danwei" jdbcType="VARCHAR" property="danwei" />
+	</resultMap>
+	<delete id="deleteByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from t_car
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.typhoon.bean.Car">
+		insert into t_car (id, gid, uid)
+		values (#{id,jdbcType=INTEGER}, #{gid,jdbcType=INTEGER},
+		#{uid,jdbcType=INTEGER})
+	</insert>
+	<update id="updateByPrimaryKey"
+		parameterType="com.typhoon.bean.Car">
+		update t_car
+		set gid = #{gid,jdbcType=INTEGER},
+		uid = #{uid,jdbcType=INTEGER},
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectByPrimaryKey"
+		parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select id, gid, uid
+		from t_car
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="selectAll" resultMap="BaseResultMap">
+		select id, gid, uid
+		from t_car
+	</select>
+	<select id="selectByUser" resultMap="BaseResultMap">
+		select c.id, c.gid, c.uid, 
+		g.name gname,g.price,g.cxprice,g.danwei,g.pic
+		from t_car c,t_goods g
+	
+		where c.uid=#{uid}
+		and c.gid=g.id
+	</select>
+</mapper>

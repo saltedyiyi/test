@@ -1,0 +1,206 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>新增商品</title>
+<%@ include file="../commonhead.jsp"%>
+<link rel="stylesheet" href="../../css/pintuer.css">
+<link rel="stylesheet" href="../../css/admin.css">
+</head>
+<body>
+
+	<form method="post" class="form-x layui-form layui-form-pane" action="">
+		
+		<div class="form-group">
+			<div class="label">
+				<label>商品名：</label>
+			</div>
+			<div class="field">
+				<input type="text" class="input w50" id="name" />
+				<div class="tips"></div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="label">
+				<label>原价：</label>
+			</div>
+			<div class="field">
+				<input type="text" class="input w50" id="price" />
+				<div class="tips"></div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="label">
+				<label>转手价：</label>
+			</div>
+			<div class="field">
+				<input type="text" class="input w50" id="cxprice" />
+				<div class="tips"></div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="label">
+				<label>数量：</label>
+			</div>
+			<div class="field">
+				<input type="text" class="input w50" id="kucun" />
+				<div class="tips"></div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="label">
+				<label>单位：</label>
+			</div>
+			<div class="field">
+				<input type="text" class="input w50" id="danwei" />
+				<div class="tips"></div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="label">
+				<label>描述：</label>
+			</div>
+			<div class="field">
+				<textarea placeholder="请输入描述" name="content" id="content"
+					class="input w50" style="width: 260px; height: 100px;"></textarea>
+				<div class="tips"></div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="label">
+				<label>上传图片：</label>
+			</div>
+			<div class="field">
+				<button class="button bg-main icon-check-square-o" type="button"
+					id="uploadfmbtn">选择图片</button>
+				<p>
+					<img class="layui-upload-img" id="img"
+						style="width: 100px; margin-top: 40px;">
+				</p>
+
+				<p id="url"></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="label">
+				<label></label>
+			</div>
+			<div class="field">
+				<button class="button bg-main icon-check-square-o" type="button"
+					id="btn">提交</button>
+			</div>
+		</div>
+	</form>
+
+	<script charset="utf-8" type="text/javascript">
+	var picPath;
+	layui.use('form', function() {
+		var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+		form.render();
+	});
+	
+	var $ = layui.jquery, upload = layui.upload;
+	//普通图片上传
+	var uploadInst = upload
+			.render({
+				elem : '#uploadfmbtn',
+				url : '${base}/goods/upload.do' //上传接口
+				,
+				before : function(obj) {
+					//预读本地文件示例，不支持ie8
+					obj.preview(function(index, file, result) {
+						$('#img').attr('src', result); //图片链接（base64）
+					});
+				},
+				done : function(res) {
+					console.log(res);
+					//如果上传失败
+					if (res.code > 0) {
+						return layer.msg('上传失败');
+					}
+					//上传成功
+					picPath = res.data;
+					//演示失败状态，并实现重传
+					var url = $('#url');
+					url
+							.html('<span style="color: #FF5722;margin-left: 40px;">'
+									+ res.msg + '</span> ');
+
+				},
+				error : function() {
+					//演示失败状态，并实现重传
+					var url = $('#url');
+					url
+							.html('<span style="color: #FF5722;margin-left: 40px;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+					url.find('.demo-reload').on('click', function() {
+						uploadInst.upload();
+					});
+				}
+			});
+
+		
+		//添加
+		$('#btn').click(function() {
+			var name = $('#name').val();
+			var price = $('#price').val();
+			var cxprice = $('#cxprice').val();
+			var kucun = $('#kucun').val();
+			var danwei = $('#danwei').val();
+			var content = $('#content').val();
+			if (!name) {
+				layer.alert('商品名称不能为空');
+				return;
+			}
+			if (!price) {
+				layer.alert('原价不能为空');
+				return;
+			}
+			if (!cxprice) {
+				layer.alert('转手价不能为空');
+				return;
+			}
+			if (!kucun) {
+				layer.alert('数量不能为空');
+				return;
+			}
+			if (!danwei) {
+				layer.alert('单位不能为空');
+				return;
+			}
+			if (!content) {
+				layer.alert('商品描述不能为空');
+				return;
+			}
+			if (!picPath) {
+				layer.alert('图片不能为空');
+				return;
+			}
+			var url = '${base}/goods/add.do';
+			var data = {
+				name : name,
+				content : content,
+				pic : picPath,
+				price : price,
+				cxprice : cxprice,
+				kucun : kucun,
+				danwei : danwei,
+			};
+			var index = layer.load(1);
+			$.post(url, data, function(result) {
+				if (result.code == 0) {
+					window.location.href = '${base}/jsp/goods/list.jsp';
+				} else {
+					layer.alert(result.msg);
+				}
+
+			}, 'json').always(function() {
+				//关闭弹层
+				layer.close(index);
+			});
+
+		});
+	</script>
+</body>
+</html>

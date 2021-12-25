@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.typhoon.dao.QiuGouMapper">
+	<resultMap id="BaseResultMap" type="com.typhoon.bean.QiuGou">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="content" jdbcType="VARCHAR" property="content" />
+		<result column="uname" jdbcType="VARCHAR" property="uname" />
+		<result column="pic" jdbcType="VARCHAR" property="pic" />
+		<result column="uid" jdbcType="INTEGER" property="uid" />
+	</resultMap>
+	<delete id="deleteByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from t_qiugou
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.typhoon.bean.QiuGou">
+		insert into t_qiugou (id, name, content,
+		pic, uid)
+		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
+		#{content,jdbcType=VARCHAR},
+		#{pic,jdbcType=VARCHAR}, #{uid,jdbcType=INTEGER})
+	</insert>
+	<update id="updateByPrimaryKey"
+		parameterType="com.typhoon.bean.QiuGou">
+		update t_qiugou
+		set name = #{name,jdbcType=VARCHAR},
+		content = #{content,jdbcType=VARCHAR},
+		pic = #{pic,jdbcType=VARCHAR},
+		uid = #{uid,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectByPrimaryKey"
+		parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select q.id, q.name, q.content, q.pic, q.uid,u.name uname
+		from t_qiugou q,t_user u
+		where q.uid=u.id
+		and q.id = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="selectAll" resultMap="BaseResultMap">
+		select q.id, q.name, q.content, q.pic, q.uid,u.name uname
+		from t_qiugou q,t_user u
+		where q.uid=u.id
+		order by id desc
+	</select>
+	<select id="selectByUser" resultMap="BaseResultMap">
+		select q.id, q.name, q.content, q.pic, q.uid,u.name uname
+		from t_qiugou q,t_user u
+		where q.uid=u.id
+		and uid=#{uid}
+		order by id desc
+		
+	</select>
+</mapper>

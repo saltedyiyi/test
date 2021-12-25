@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	<!--解决返回json数据乱码问题 -->
+	<bean id="stringHttpMessageConverter"
+		class="org.springframework.http.converter.StringHttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>text/plain;charset=UTF-8</value>
+				<value>application/json;charset=UTF-8</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 注解驱动 -->
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<ref bean="stringHttpMessageConverter" />
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	<!-- 注册组件扫描器 只扫描controller -->
+	<context:component-scan
+		base-package="com.typhoon.controller" />
+	<!-- 注册拦截器 /**只能拦截controller的请求，执行顺序跟随配置顺序 -->
+
+	<!-- <mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/user/login.do" />
+			<mvc:exclude-mapping path="/user/register.do" />
+			<bean class="com.typhoon.interceptor.MyInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors> -->
+	<!--文件上传 -->
+	<!--注册multipartResolver,由DispatcherServlet来负责调用 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!--设置字符编码防止文件名乱码 -->
+		<property name="defaultEncoding" value="utf-8" />
+		<!--设置单个上传文件的大小，单位是字节b -->
+		<property name="maxUploadSizePerFile" value="104857600" />
+	</bean>
+	<!-- <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver" 
+		/> -->
+	<!-- 视图解析器 -->
+	<bean
+		class="org.springframework.web.servlet.view.BeanNameViewResolver">
+	</bean>
+	<!--内部视图解析器 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/jsp/"></property><!-- 前缀 -->
+		<property name="suffix" value=".jsp"></property><!-- 后缀 -->
+	</bean>
+
+</beans>
