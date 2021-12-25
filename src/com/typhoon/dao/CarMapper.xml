@@ -25,7 +25,7 @@
 		parameterType="com.typhoon.bean.Car">
 		update t_car
 		set gid = #{gid,jdbcType=INTEGER},
-		uid = #{uid,jdbcType=INTEGER},
+		uid = #{uid,jdbcType=INTEGER}
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<select id="selectByPrimaryKey"
@@ -39,10 +39,10 @@
 		from t_car
 	</select>
 	<select id="selectByUser" resultMap="BaseResultMap">
-		select c.id, c.gid, c.uid, 
+		select c.id, c.gid, c.uid,
 		g.name gname,g.price,g.cxprice,g.danwei,g.pic
 		from t_car c,t_goods g
-	
+
 		where c.uid=#{uid}
 		and c.gid=g.id
 	</select>

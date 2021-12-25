@@ -19,10 +19,6 @@ $(function(){
 		check_cpwd();
 	});
 
-	$('#email').blur(function() {
-		check_email();
-	});
-
 	$('#allow').click(function() {
 		if($(this).is(':checked'))
 		{
@@ -87,33 +83,28 @@ $(function(){
 		
 	}
 
-	function check_email(){
-		var re = /^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$/;
 
-		if(re.test($('#email').val()))
-		{
-			$('#email').next().hide();
-			error_email = false;
-		}
-		else
-		{
-			$('#email').next().html('你输入的邮箱格式不正确')
-			$('#email').next().show();
-			error_check_password = true;
-		}
-
-	}
-
-
-	$('#reg_form').submit(function() {
+	$('#reg_form').submit(function(e) {
 		check_user_name();
 		check_pwd();
 		check_cpwd();
-		check_email();
+		console.log(e)
 
 		if(error_name == false && error_password == false && error_check_password == false && error_email == false && error_check == false)
 		{
-			return true;
+			var url = '${base}/user/add.do';
+			$.post(url, data, function(result) {
+				if (result.code == 0) {
+					window.location.href = '${base}/jsp/login.jsp';
+
+				} else {
+					layer.alert(result.msg);
+				}
+
+			}, 'json').always(function() {
+				//关闭弹层
+				layer.close(index);
+			});
 		}
 		else
 		{

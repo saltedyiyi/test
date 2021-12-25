@@ -46,10 +46,10 @@
 			<param-value>UTF-8</param-value>
 		</init-param>
 		<!--强制指定字符编码，即如果在request中指定了字符编码，那么也会为其强制指定当前设置的字符编码 -->
-		<init-param>
-			<param-name>forceEncoding</param-name>
-			<param-value>true</param-value>
-		</init-param>
+<!--		<init-param>-->
+<!--			<param-name>forceEncoding</param-name>-->
+<!--			<param-value>true</param-value>-->
+<!--		</init-param>-->
 	</filter>
 	<filter-mapping>
 		<filter-name>characterEncodingFilter</filter-name>
